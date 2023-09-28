@@ -1,9 +1,6 @@
-const axios = require('axios').default;
+const app = require("./app");
+const config = require("./config/config");
 
-const sayHey = (name) => {
-    return `Hey ${name}`
-}
-
-module.exports = {
-    sayHey
-}
+app.listen(config.port, () => {
+  console.info(`Listening on port ${config.port}`);
+});
