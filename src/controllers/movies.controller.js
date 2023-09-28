@@ -10,9 +10,11 @@ const getMoviesByActor = catchAsync(async (req, res) => {
     const infoByActorName = _.groupBy(info, "actorName");
 
     const result = actors.reduce((accumulator, actor) => {
-      accumulator[actor] = (infoByActorName[actor] ?? []).map(
-        (info) => info.movieName,
-      );
+      accumulator[actor] = [
+        ...new Set(
+          (infoByActorName[actor] ?? []).map((info) => info.movieName),
+        ),
+      ];
       return accumulator;
     }, {});
     res.send(result);
