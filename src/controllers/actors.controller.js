@@ -10,13 +10,17 @@ const getActorsWithMultiCharactersByName = catchAsync(async (req, res) => {
     const infoByActorName = _.groupBy(info, "actorName");
 
     const result = actors.reduce((accumulator, actor) => {
-      accumulator[actor] = _.uniqBy(
+      const uniqueCharacters = _.uniqBy(
         (infoByActorName[actor] ?? []).map(({ movieName, characterName }) => ({
           movieName,
           characterName,
         })),
         "characterName",
       );
+
+      if (uniqueCharacters.length > 1) {
+        accumulator[actor] = uniqueCharacters;
+      }
       return accumulator;
     }, {});
     res.send(result);
