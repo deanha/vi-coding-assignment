@@ -1,6 +1,17 @@
 const tmdbService = require("./TMDBService");
 const _ = require("lodash");
 
+const sanitizedCharacterNames = (characterName) => {
+  return characterName
+    .split("/")
+    .map((str) =>
+      str
+        .replace("(archive footage / uncredited)", "")
+        .replace("(uncredited)", "")
+        .trim(),
+    );
+};
+
 const getMoviesInfo = async (movies) =>
   _.flatMap(
     await Promise.all(
@@ -18,7 +29,13 @@ const getMoviesInfo = async (movies) =>
             if (knownForDepartment === "Acting") {
               accumulator = [
                 ...accumulator,
-                { actorName, movieName, characterName },
+                ...sanitizedCharacterNames(characterName).map(
+                  (sanitizedCharacterName) => ({
+                    actorName,
+                    movieName,
+                    characterName: sanitizedCharacterName,
+                  }),
+                ),
               ];
             }
             return accumulator;
